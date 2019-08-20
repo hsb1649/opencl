@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <CL/cl.h> 
+#include <cl.h> 
 
 #include "bmpfuncs.h"
 

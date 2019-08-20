@@ -10,19 +10,19 @@
 // OpenCL kernel to perform an element-wise 
 // add of two arrays                        
 const char* programSource =
-“__kernel                                            \n”
-“void vecadd(__global int *A,                        \n”
-“            __global int *B,                        \n”
-“            __global int *C)                        \n”
-“{                                                   \n”
-“                                                    \n”
-“   // Get the work-item’s unique ID                 \n”
-“   int idx = get_global_id(0);                      \n”
-“                                                    \n”
-“   // Add the corresponding locations of            \n”
-“   // 'A' and 'B', and store the result in 'C'.     \n”
-“   C[idx] = A[idx] + B[idx];                        \n”
-“}                                                   \n”
+"__kernel                                            \n"
+"void vecadd(__global int *A,                        \n"
+"            __global int *B,                        \n"
+"            __global int *C)                        \n"
+"{                                                   \n"
+"                                                    \n"
+"   // Get the work-item’s unique ID                 \n"
+"   int idx = get_global_id(0);                      \n"
+"                                                    \n"
+"   // Add the corresponding locations of            \n"
+"   // 'A' and 'B', and store the result in 'C'.     \n"
+"   C[idx] = A[idx] + B[idx];                        \n"
+"}                                                   \n"
 ;
 
 int main() {
@@ -303,10 +303,10 @@ int main() {
         NULL);
 
     // Verify the output
-    bool result = true;
+    char result = 1;
     for(int i = 0; i < elements; i++) {
         if(C[i] != i+i) {
-            result = false;
+            result = 0;
             break;
         }
     }
@@ -315,7 +315,8 @@ int main() {
     } else {
         printf("Output is incorrect\n");
     }
-
+    clGetdeviceinfo(devices[0],CL_DEVICE_MAX_WORK_GROUP_SIZE,,
+    CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
     //-----------------------------------------------------
     // STEP 13: Release OpenCL resources
     //----------------------------------------------------- 
