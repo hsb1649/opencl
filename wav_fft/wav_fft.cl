@@ -1,26 +1,28 @@
 __kernel
-void fft_execute(__constant float *** inputdata,
-                 __global float2 *** outputdata,
-                 __local float2 ** localdata,
-                 )
+void fft(__constant ushort * inputdata,
+                 __global float2 * outputdata,
+                 __local float2 * localdata)
 {
     int gid = get_group_id(0);
+    int ls = get_local_size(0);
     int lid = get_local_id(0);
-    int r_lid;
+    int r_lid=0;
     for(int i=0;i<10;++i )
     {
         r_lid|=((lid>>i)&1)<<(9-i);
     }
-    local[0][r_lid]=(inputdata[gid][0][lid],0.0f);
-    
+    localdata[r_lid].x=(float)inputdata[gid*ls+lid];
     barrier(CLK_LOCAL_MEM_FENCE);
+    //printf("%d = %u ->%f\n",lid,inputdata[gid*ls+lid],localdata[lid].x);
 
-    float PI = acos((float)-1);
+    float PI = acos(-1.0f);
     float2 w;
-    for(int i=0,mask=1;i<10;i++,mask<<=1)
+    int mask =1;
+    for(int i=0;i<10;i++)
     {
-        float theta = (2*PI>>i)*((mask-1)|lid);
-        w.y=-sincos(theta,&w.x);
+        float theta = PI*(2>>i)*((mask-1)&lid);
+        w.x=cos(theta);
+        w.y=-sin(theta);
         float2 tmp1 = localdata[lid&(~mask)];
         float2 tmp2 = localdata[lid|mask];
         float2 tmp3;
@@ -35,9 +37,8 @@ void fft_execute(__constant float *** inputdata,
             {
                 localdata[lid]=tmp1-tmp3;
             }
-
+        mask<<=1;
     }
-    barrier[CLK_LOCAL_MEM_FENCE];
-
-    outputdata[gid][lid]=localdata[lid];
+    barrier(CLK_LOCAL_MEM_FENCE);
+    outputdata[gid*ls+lid]=localdata[lid];
 }

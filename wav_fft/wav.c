@@ -420,8 +420,7 @@ size_t wav_read(WavFile* self, void** buffers, size_t count) {
         self->error_code = WAV_ERROR_OS;
         return 0;
     }
-
-    for (i = 0; i < n_channels; ++i) {
+    for (i = 0; i < 1; ++i) {
         for (j = 0; j < read_count / n_channels; ++j) {
 #ifdef WAV_ENDIAN_LITTLE
             for (k = 0; k < sample_size; ++k) {
