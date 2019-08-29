@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
             count =24;
             remain_count -= 24;
         }
-        wav_read(wf, &buffers,1024*count); 
+        wav_read(wf, (void **)&buffers,1024*count); 
         status = clEnqueueWriteBuffer(queue, buf_1, CL_FALSE, 0, 
         count*1024*sizeof(cl_ushort), &buffers[0], 0, NULL, NULL);
         chk(status, "clEnqueueWritebuffer");
@@ -177,5 +177,4 @@ int main(int argc, char* argv[])
     free(obuffers);
 
 
-    return;
 }
